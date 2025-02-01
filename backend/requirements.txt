@@ -1,0 +1,11 @@
+fastapi
+uvicorn[standard]
+SQLAlchemy>=2.0
+databases[postgresql]
+asyncpg
+pydantic
+passlib[script]
+python-jose[cryptography]
+alembic
+fastapi-users[SQLAlchemy2]
+websockets
