@@ -6,8 +6,24 @@ class UserBase(BaseModel):
     email: EmailStr
     role: str
 
-class UserCreate(UserBase):
+class UserRead(BaseModel):
+    id: int
+    email: EmailStr
+    is_active: bool
+    is_superuser: bool = False
+    is_verified: bool = False
+    role: str
+
+    class Config:
+        orm_mode = True  # For Pydantic v2, you might use `from_attributes = True`
+
+class UserCreate(BaseModel):
+    email: EmailStr
     password: str
+    role: str  # Include role in the registration payload
+
+    class Config:
+        orm_mode = True
 
 class UserOut(UserBase):
     id: int

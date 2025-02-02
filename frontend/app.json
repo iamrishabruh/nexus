@@ -1,28 +1,16 @@
 {
   "expo": {
-    "name": "frontend",
-    "slug": "frontend",
+    "name": "Nexus",
+    "slug": "nexus",
     "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
-    "newArchEnabled": true,
-    "splash": {
-      "image": "./assets/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "ios": {
-      "supportsTablet": true
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      }
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
+    "platforms": ["ios", "android", "web"],
+    "extra": {
+      "firebaseApiKey": "AIzaSyDY0dYlAKvXVmrxE4wLRcyHzbqR-mzhkjI",
+      "firebaseAuthDomain": "nexus-ce4bf.firebaseapp.com",
+      "firebaseProjectId": "nexus-ce4bf",
+      "firebaseStorageBucket": "nexus-ce4bf.firebasestorage.app",
+      "firebaseMessagingSenderId": "912808680775",
+      "firebaseAppId": "1:912808680775:web:374887234cba28e9f4c062"
     }
   }
 }

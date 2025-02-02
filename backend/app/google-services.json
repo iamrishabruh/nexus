@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "912808680775",
+    "project_id": "nexus-ce4bf",
+    "storage_bucket": "nexus-ce4bf.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:912808680775:android:0a27c0a7cf47b4e7f4c062",
+        "android_client_info": {
+          "package_name": "com.nexus.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9xGzkhPVuFiKlx9JKaZ3RwsNUkSR5uxg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

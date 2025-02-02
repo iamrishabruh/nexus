@@ -1,6 +1,6 @@
 fastapi
 uvicorn[standard]
-SQLAlchemy>=2.0
+sqlalchemy
 databases[postgresql]
 asyncpg
 pydantic
