@@ -1,4 +1,4 @@
-// frontend/src/screens/RegisterScreen.tsx
+// src/screens/RegisterScreen.tsx
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import API from '../services/api';
@@ -10,20 +10,29 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Register'>;
 const RegisterScreen: React.FC<Props> = ({ navigation }) => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [role, setRole] = useState<string>('patient'); // default role is "patient"
+  const [role, setRole] = useState<string>('patient'); // Default role; options: patient, family, doctor
   const [error, setError] = useState<string>('');
 
   const handleRegister = async () => {
     try {
-      // Call the register endpoint; adjust the payload as needed by your backend.
-      await API.post('/auth/register', { email, password, role });
-      Alert.alert("Success", "Registration successful!");
-      navigation.navigate('Login'); // After registration, navigate back to login.
-    } catch (err) {
-      console.error(err);
-      setError('Registration failed. Please try again.');
+      const response = await API.post('/auth/register', { 
+        email, 
+        password, 
+        role 
+      });
+      
+      if (response.status === 201) {
+        Alert.alert("Success", "Registration successful!");
+        navigation.navigate('Login');
+      }
+    } catch (err: any) {
+      console.error('Registration error:', err.response?.data);
+      const errorMessage = err.response?.data?.detail || 'Registration failed. Please try again.';
+      setError(errorMessage);
+      Alert.alert("Registration Error", errorMessage);
     }
   };
+  
 
   return (
     <View style={styles.container}>
@@ -44,7 +53,6 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
         onChangeText={setPassword}
         secureTextEntry
       />
-      {/* In a more complex UI you might use a Picker or Select component */}
       <TextInput
         style={styles.input}
         placeholder="Role (patient, family, doctor)"
@@ -57,16 +65,18 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, justifyContent: 'center' },
-  title: { fontSize: 24, marginBottom: 20, textAlign: 'center' },
+  container: { flex: 1, padding: 20, justifyContent: 'center', backgroundColor: '#f9f9f9' },
+  title: { fontSize: 28, fontWeight: '600', marginBottom: 20, textAlign: 'center', color: '#333' },
   input: {
-    borderWidth: 1,
+    height: 50,
     borderColor: '#ccc',
-    padding: 10,
+    borderWidth: 1,
+    borderRadius: 8,
     marginVertical: 10,
-    borderRadius: 5,
+    paddingHorizontal: 15,
+    backgroundColor: '#fff'
   },
-  error: { color: 'red', textAlign: 'center' },
+  error: { color: 'red', textAlign: 'center', marginBottom: 10 },
 });
 
 export default RegisterScreen;

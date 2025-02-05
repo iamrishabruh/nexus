@@ -1,21 +1,20 @@
 # backend/app/database.py
+from fastapi import Depends
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
-from sqlalchemy.orm import sessionmaker, declarative_base
-from dotenv import load_dotenv
+from sqlalchemy.orm import sessionmaker
+from .base import Base
+from fastapi_users_db_sqlalchemy import SQLAlchemyUserDatabase
+from .models import UserTable
 import os
 
-load_dotenv()
-
-# Use environment variables for sensitive data in production!
-DATABASE_URL = os.getenv("DATABASE_URL")
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql+asyncpg://rishabruh:password@localhost/nexusdb")
 
 engine = create_async_engine(DATABASE_URL, echo=True)
-AsyncSessionLocal = sessionmaker(
-    engine, class_=AsyncSession, expire_on_commit=False
-)
-Base = declarative_base()
+AsyncSessionLocal = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
-# Dependency for FastAPI routes
-async def get_db():
+async def get_async_session() -> AsyncSession:
     async with AsyncSessionLocal() as session:
         yield session
+
+async def get_db(session: AsyncSession = Depends(get_async_session)):
+    yield SQLAlchemyUserDatabase(session, UserTable)

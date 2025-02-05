@@ -1,6 +1,7 @@
-// frontend/src/screens/PatientDashboard.tsx
+// src/screens/PatientDashboard.tsx
 import React from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
+import { View, Text, StyleSheet, Button, ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
 
@@ -8,17 +9,21 @@ type Props = NativeStackScreenProps<RootStackParamList, 'PatientDashboard'>;
 
 const PatientDashboard: React.FC<Props> = ({ navigation }) => {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Patient Dashboard</Text>
-      <Text>Welcome, Patient! Here you can track your health data, log daily metrics, and manage medication reminders.</Text>
-      <Button title="Log Health Data" onPress={() => { /* Navigate to a Log Health Data screen */ }} />
-    </View>
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView contentContainerStyle={styles.container}>
+        <Text style={styles.title}>Patient Dashboard</Text>
+        <Text style={styles.text}>Welcome, Patient! Here you can track your daily health metrics, log data, and manage medication reminders.</Text>
+        <Button title="Log Health Data" onPress={() => { /* Placeholder action */ }} />
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, justifyContent: 'center', alignItems: 'center' },
-  title: { fontSize: 24, marginBottom: 20 },
+  safeArea: { flex: 1, backgroundColor: '#fff' },
+  container: { flexGrow: 1, padding: 20, alignItems: 'center', justifyContent: 'center' },
+  title: { fontSize: 28, fontWeight: '600', marginBottom: 20, color: '#333' },
+  text: { fontSize: 16, textAlign: 'center', marginBottom: 20, color: '#555' },
 });
 
 export default PatientDashboard;

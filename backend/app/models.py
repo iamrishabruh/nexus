@@ -1,18 +1,16 @@
 # backend/app/models.py
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey
-from fastapi_users_db_sqlalchemy import SQLAlchemyUserDatabase
-from sqlalchemy.orm import relationship
-from .database import Base
+from sqlalchemy import Column, String, DateTime
+from fastapi_users_db_sqlalchemy import SQLAlchemyBaseUserTableUUID
+from .base import Base
 from datetime import datetime
 
-class UserTable(SQLAlchemyUserDatabase, Base):
+class UserTable(SQLAlchemyBaseUserTableUUID, Base):
     __tablename__ = "users"
-    
-    id = Column(Integer, primary_key=True, index=True)
-    email = Column(String, unique=True, index=True)
-    hashed_password = Column(String)
-    role = Column(String, nullable=False)  # "patient", "family", "doctor"
-    is_active = Column(Boolean, default=True)
+    role = Column(String, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
-    
-    # Relationships with health data, reminders, etc.
+    # Remove redundant fields (provided by SQLAlchemyBaseUserTableUUID):
+    # - email
+    # - hashed_password
+    # - is_active
+    # - is_superuser
+    # - is_verified

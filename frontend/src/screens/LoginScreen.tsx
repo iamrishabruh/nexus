@@ -1,12 +1,52 @@
-// frontend/src/screens/LoginScreen.tsx
 import React, { useState } from 'react';
-import { View, TextInput, Button, Text, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import API from '../services/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
+import { decode } from 'react-native-jwt-decode';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
+
+interface DecodedToken {
+  sub: string;
+  role: string;
+}
+
+// Set polyfill once at the top level
+if (typeof global.atob === 'undefined') {
+  global.atob = decode;
+}
+
+const styles = StyleSheet.create({
+  container: { 
+    flex: 1, 
+    padding: 20, 
+    justifyContent: 'center', 
+    backgroundColor: '#f9f9f9' 
+  },
+  title: { 
+    fontSize: 28, 
+    fontWeight: '600', 
+    marginBottom: 20, 
+    textAlign: 'center', 
+    color: '#333' 
+  },
+  input: {
+    height: 50,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 8,
+    marginVertical: 10,
+    paddingHorizontal: 15,
+    backgroundColor: '#fff'
+  },
+  error: { 
+    color: 'red', 
+    textAlign: 'center', 
+    marginBottom: 10 
+  },
+});
 
 const LoginScreen: React.FC<Props> = ({ navigation }) => {
   const [email, setEmail] = useState<string>('');
@@ -15,22 +55,42 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
 
   const handleLogin = async () => {
     try {
-      // Call the backend login endpoint (using fastapi-users endpoint)
-      const response = await API.post('/auth/login', { username: email, password });
-      const { access_token, user } = response.data;
-      // Save token securely
+      const formData = new URLSearchParams();
+      formData.append('username', email);
+      formData.append('password', password);
+
+      const response = await API.post('/auth/jwt/login', formData, {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      });
+
+      const { access_token } = response.data;
       await AsyncStorage.setItem('token', access_token);
-      // Navigate based on user role; here we use a simple check:
-      if (user.role === 'patient') {
-        navigation.navigate('PatientDashboard');
-      } else if (user.role === 'family') {
-        navigation.navigate('FamilyDashboard');
-      } else if (user.role === 'doctor') {
-        navigation.navigate('DoctorDashboard');
+
+      // Proper JWT decoding
+      const decoded = decode(access_token) as DecodedToken;
+      
+      switch(decoded.role) {
+        case 'patient':
+          navigation.navigate('PatientDashboard');
+          break;
+        case 'family':
+          navigation.navigate('FamilyDashboard');
+          break;
+        case 'doctor':
+          navigation.navigate('DoctorDashboard');
+          break;
+        default:
+          navigation.navigate('PatientDashboard');
       }
-    } catch (err) {
-      console.error(err);
-      setError('Login failed. Check your credentials.');
+    } catch (err: any) {
+      console.error('Login error:', err.response?.data);
+      setError('Login failed. Please check your credentials.');
+      Alert.alert(
+        "Login Error", 
+        err.response?.data?.detail || 'An unexpected error occurred'
+      );
     }
   };
 
@@ -54,22 +114,12 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
         secureTextEntry
       />
       <Button title="Login" onPress={handleLogin} />
-      <Button title="Register" onPress={() => navigation.navigate('Register')} />
+      <Button 
+        title="Register" 
+        onPress={() => navigation.navigate('Register')} 
+      />
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, justifyContent: 'center' },
-  title: { fontSize: 24, marginBottom: 20, textAlign: 'center' },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 10,
-    marginVertical: 10,
-    borderRadius: 5,
-  },
-  error: { color: 'red', textAlign: 'center' },
-});
 
 export default LoginScreen;

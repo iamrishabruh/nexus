@@ -1,6 +1,7 @@
-// frontend/src/screens/FamilyDashboard.tsx
+// src/screens/FamilyDashboard.tsx
 import React from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
+import { View, Text, StyleSheet, Button, ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
 
@@ -8,17 +9,23 @@ type Props = NativeStackScreenProps<RootStackParamList, 'FamilyDashboard'>;
 
 const FamilyDashboard: React.FC<Props> = ({ navigation }) => {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Family Dashboard</Text>
-      <Text>Welcome, Family Member! You can view and update your loved one's health data and medication reminders.</Text>
-      <Button title="View Patient Data" onPress={() => { /* Navigate to view/update patient details */ }} />
-    </View>
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView contentContainerStyle={styles.container}>
+        <Text style={styles.title}>Family Dashboard</Text>
+        <Text style={styles.text}>
+          Welcome, Family Member! Here you can view and update your loved one’s health data and manage reminders.
+        </Text>
+        <Button title="View Patient Data" onPress={() => { /* Placeholder action */ }} />
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, justifyContent: 'center', alignItems: 'center' },
-  title: { fontSize: 24, marginBottom: 20 },
+  safeArea: { flex: 1, backgroundColor: '#fff' },
+  container: { flexGrow: 1, padding: 20, alignItems: 'center', justifyContent: 'center' },
+  title: { fontSize: 28, fontWeight: '600', marginBottom: 20, color: '#333' },
+  text: { fontSize: 16, textAlign: 'center', marginBottom: 20, color: '#555' },
 });
 
 export default FamilyDashboard;
